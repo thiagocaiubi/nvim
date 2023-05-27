@@ -191,6 +191,9 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
+  -- null-ls
+  { 'jose-elias-alvarez/null-ls.nvim', dependencies = { 'nvim-lua/plenary.nvim' } },
+
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -279,7 +282,7 @@ require('telescope').setup {
       },
     },
     file_ignore_patterns = {
-      "node_modules",
+      'node_modules',
     },
   },
 }
@@ -444,7 +447,6 @@ local servers = {
       telemetry = { enable = false },
     },
   },
-  prettier = {},
   sqlls = {},
   terraformls = {},
   tsserver = {},
@@ -474,6 +476,48 @@ mason_lspconfig.setup_handlers {
       settings = servers[server_name],
     }
   end,
+}
+
+-- [[ Configure null-ls ]]
+local null_ls = require 'null-ls'
+local augroup = vim.api.nvim_create_augroup('LspFormatting', {})
+local sources = {
+  --lua
+  null_ls.builtins.formatting.stylua,
+
+  -- python
+  null_ls.builtins.formatting.black,
+  null_ls.builtins.formatting.isort,
+
+  -- prettier
+  null_ls.builtins.formatting.prettier,
+
+  -- shell
+  null_ls.builtins.code_actions.shellcheck,
+  null_ls.builtins.formatting.shfmt,
+
+  -- jq
+  null_ls.builtins.formatting.jq,
+
+  -- env
+  null_ls.builtins.hover.printenv,
+}
+
+null_ls.setup {
+  -- you can reuse a shared lspconfig on_attach callback here
+  on_attach = function(client, bufnr)
+    if client.supports_method 'textDocument/formatting' then
+      vim.api.nvim_clear_autocmds { group = augroup, buffer = bufnr }
+      vim.api.nvim_create_autocmd('BufWritePre', {
+        group = augroup,
+        buffer = bufnr,
+        callback = function()
+          vim.lsp.buf.format { bufnr = bufnr }
+        end,
+      })
+    end
+  end,
+  sources = sources,
 }
 
 -- [[ Configure nvim-cmp ]]
