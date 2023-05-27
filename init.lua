@@ -434,12 +434,22 @@ local servers = {
   -- rust_analyzer = {},
   -- tsserver = {},
 
+  bashls = {},
+  gopls = {},
+  dockerls = {},
+  jsonls = {},
   lua_ls = {
     Lua = {
       workspace = { checkThirdParty = false },
       telemetry = { enable = false },
     },
   },
+  prettier = {},
+  sqlls = {},
+  terraformls = {},
+  tsserver = {},
+  volar = {},
+  yamlls = {},
 }
 
 -- Setup neovim lua configuration
