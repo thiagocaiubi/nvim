@@ -130,27 +130,18 @@ require('lazy').setup({
   },
 
   {
-    -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+    'Lokaltog/monotone.nvim',
+    dependencies = { 'rktjmp/lush.nvim' },
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'onedark'
+      vim.cmd.colorscheme 'monotone'
+
+      vim.cmd.highlight 'link diffAdded DiffAdd'
+      vim.cmd.highlight 'link diffRemoved DiffDelete'
     end,
   },
 
-  {
-    -- Set lualine as statusline
-    'nvim-lualine/lualine.nvim',
-    -- See `:help lualine.txt`
-    opts = {
-      options = {
-        icons_enabled = false,
-        theme = 'onedark',
-        component_separators = '|',
-        section_separators = '',
-      },
-    },
-  },
+  { 'nvim-lualine/lualine.nvim' },
 
   {
     -- Add indentation guides even on blank lines
@@ -569,6 +560,18 @@ cmp.setup {
   sources = {
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
+  },
+}
+
+-- [[ Configure lualine ]]
+local onedark = require 'lualine.themes.onedark'
+
+require('lualine').setup {
+  options = {
+    icons_enabled = false,
+    theme = onedark,
+    component_separators = '|',
+    section_separators = '',
   },
 }
 
