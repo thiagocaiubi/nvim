@@ -129,6 +129,8 @@ require('lazy').setup({
     },
   },
 
+  -- { 'navarasu/onedark.nvim' },
+
   {
     'Lokaltog/monotone.nvim',
     dependencies = { 'rktjmp/lush.nvim' },
