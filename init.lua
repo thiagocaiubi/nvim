@@ -583,6 +583,14 @@ require('lualine').setup {
     component_separators = '|',
     section_separators = '',
   },
+  sections = {
+    lualine_a = {
+      {
+        'filename',
+        path = 3, -- Absolute path, with tilde as the home directory
+      },
+    },
+  },
 }
 
 -- The line beneath this is called `modeline`. See `:help modeline`
