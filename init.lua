@@ -194,7 +194,7 @@ require('lazy').setup({
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
-  -- require 'kickstart.plugins.autoformat',
+  require 'kickstart.plugins.autoformat',
   -- require 'kickstart.plugins.debug',
 
   -- NOTE: The import below automatically adds your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
@@ -315,7 +315,7 @@ require('nvim-treesitter.configs').setup {
   auto_install = false,
 
   highlight = { enable = true },
-  indent = { enable = true, disable = { 'python' } },
+  indent = { enable = false, disable = { 'python' } },
   incremental_selection = {
     enable = true,
     keymaps = {
@@ -376,6 +376,41 @@ vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous dia
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
+
+-- [[ Configure null-ls ]]
+local null_ls = require 'null-ls'
+null_ls.setup {
+  sources = {
+    -- env
+    null_ls.builtins.hover.printenv,
+
+    -- eslint
+    null_ls.builtins.code_actions.eslint,
+
+    -- jq
+    null_ls.builtins.formatting.jq,
+
+    --lua
+    null_ls.builtins.formatting.stylua,
+
+    -- prettier
+    null_ls.builtins.formatting.prettier,
+
+    -- python
+    null_ls.builtins.formatting.black,
+    null_ls.builtins.formatting.isort,
+
+    -- shell
+    null_ls.builtins.code_actions.shellcheck,
+    null_ls.builtins.formatting.shfmt,
+
+    -- spell
+    null_ls.builtins.completion.spell,
+
+    -- terraform
+    null_ls.builtins.formatting.terraform_fmt,
+  },
+}
 
 -- [[ Configure LSP ]]
 --  This function gets run when an LSP connects to a particular buffer.
@@ -473,48 +508,6 @@ mason_lspconfig.setup_handlers {
       settings = servers[server_name],
     }
   end,
-}
-
--- [[ Configure null-ls ]]
-local null_ls = require 'null-ls'
-local augroup = vim.api.nvim_create_augroup('LspFormatting', {})
-local sources = {
-  --lua
-  null_ls.builtins.formatting.stylua,
-
-  -- python
-  null_ls.builtins.formatting.black,
-  null_ls.builtins.formatting.isort,
-
-  -- prettier
-  null_ls.builtins.formatting.prettier,
-
-  -- shell
-  null_ls.builtins.code_actions.shellcheck,
-  null_ls.builtins.formatting.shfmt,
-
-  -- jq
-  null_ls.builtins.formatting.jq,
-
-  -- env
-  null_ls.builtins.hover.printenv,
-}
-
-null_ls.setup {
-  -- you can reuse a shared lspconfig on_attach callback here
-  on_attach = function(client, bufnr)
-    if client.supports_method 'textDocument/formatting' then
-      vim.api.nvim_clear_autocmds { group = augroup, buffer = bufnr }
-      vim.api.nvim_create_autocmd('BufWritePre', {
-        group = augroup,
-        buffer = bufnr,
-        callback = function()
-          vim.lsp.buf.format { bufnr = bufnr }
-        end,
-      })
-    end
-  end,
-  sources = sources,
 }
 
 -- [[ Configure nvim-cmp ]]
