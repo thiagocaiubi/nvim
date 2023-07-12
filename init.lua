@@ -425,9 +425,6 @@ null_ls.setup {
     null_ls.builtins.code_actions.shellcheck,
     null_ls.builtins.formatting.shfmt,
 
-    -- spell
-    null_ls.builtins.completion.spell,
-
     -- terraform
     null_ls.builtins.formatting.terraform_fmt,
   },
